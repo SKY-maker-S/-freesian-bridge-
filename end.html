@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>프리시안 브릿지</title>
+    <style>
+        /* 기본 스타일 */
+        body {
+            font-family: Arial, sans-serif;
+            background: url('mot2.jpg') no-repeat center center fixed;
+            background-size: cover;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            backdrop-filter: blur(10px);
+            overflow: hidden;
+        }
+        /* 소개 페이지 팝업 */
+        .intro-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+        .intro-content {
+            background-color: #fff;
+            padding: 30px;
+            max-width: 600px;
+            width: 90%;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            animation: fadeIn 1.5s ease-out;
+        }
+        .intro-content img {
+            width: 100px;
+            height: auto;
+            margin-bottom: 20px;
+            animation: fadeIn 1.5s ease-out;
+        }
+        .intro-content h2 {
+            font-size: 24px;
+            color: #003153;
+            margin-bottom: 15px;
+            animation: slideDown 1s ease-out;
+        }
+        .intro-content p {
+            font-size: 16px;
+            color: #333;
+            line-height: 1.6;
+            animation: fadeInUp 1.2s ease-out;
+        }
+        .close-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #003153;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            animation: fadeIn 1.5s ease-out;
+        }
+        /* 메인 컨테이너 */
+        .container {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            display: none;
+            animation: fadeIn 1.5s ease-out;
+        }
+        h1 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 10px;
+            animation: slideDown 1s ease-out;
+        }
+        /* 탭 스타일 */
+        .tab {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            animation: slideUp 1.3s ease-out;
+        }
+        .tab button {
+            background-color: #003153;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 0 5px;
+            animation: fadeIn 1.5s ease-out;
+        }
+        .tab button:hover {
+            background-color: #002244;
+        }
+        .tab button.active {
+            background-color: #002244;
+        }
+        .tabcontent {
+            display: none;
+            animation: fadeIn 1.5s ease-out;
+        }
+        .tabcontent.active {
+            display: block;
+        }
+        /* 폼과 결과 스타일 */
+        .form-group {
+            margin-bottom: 15px;
+            animation: fadeInUp 1s ease-out;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group input,
+        .form-group select {
+            width: calc(100% - 22px);
+            padding: 10px;
+            border: 1px solid #003153;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .form-group button {
+            width: 100%;
+            padding: 10px;
+            background-color: #003153;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            animation: fadeInUp 1.3s ease-out;
+        }
+        .form-group button:hover {
+            background-color: #002244;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #e7f3fe;
+            border-left: 6px solid #003153;
+            border-radius: 4px;
+            animation: fadeIn 1.5s ease-out;
+        }
+        /* 사이트 설명 및 개인정보 보호정책 */
+        .info {
+            position: fixed;
+            bottom: 20px;
+            font-size: 14px;
+            color: black;
+            cursor: pointer;
+            text-align: center;
+            width: 100%;
+            animation: fadeInUp 1.5s ease-out;
+        }
+        /* 팝업 */
+        .popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            width: 80%;
+            max-width: 400px;
+            display: none;
+            z-index: 100;
+            text-align: center;
+            animation: fadeIn 1s ease-out;
+        }
+        /* 애니메이션 */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-container {
+        transition: max-height 0.5s ease, opacity 0.5s ease;
+        overflow: hidden;
+        max-height: 0;
+        opacity: 0;
+    }
+
+    /* 검색 결과를 보여줄 때 사용할 클래스 */
+    .result-container.show {
+        max-height: 400px; /* 최대 높이 */
+        opacity: 1;
+    }
+
+    .result {
+        padding: 15px;
+        background-color: #e7f3fe;
+        border-left: 6px solid #003153;
+        border-radius: 4px;
+        max-height: 300px; /* 개별 스크롤 영역 높이 */
+        overflow-y: auto;
+        transition: all 0.3s ease;
+    }
+
+    .result::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .result::-webkit-scrollbar-thumb {
+        background-color: #003153;
+        border-radius: 10px;
+    }
+
+    .result h2 {
+        font-size: 18px;
+        color: #003153;
+    }
+    </style>
+</head>
+<body>
+    <!-- 소개 팝업 -->
+    <div class="intro-popup" id="introPopup">
+        <div class="intro-content">
+            <img src="log.jpg" alt="프리시안 브릿지 로고">
+            <h2>안녕하세요! 프리시안 브릿지에 오신 것을 환영합니다.</h2>
+            <p>프러시안 블루가 역사적으로 파란색의 대중화를 이끌었던 것처럼, 프리시안 브릿지는 정보와 기술의 대중화를 목표로 합니다. 우리는 기술 격차와 정보 격차로 인해 소외된 모든 사람들에게 지식과 배움의 기회를 제공하고자 합니다.</p>
+            <p>프리시안 브릿지는 누구나 쉽게 접근할 수 있는 학습 자료와 복지정책 정보를 제공합니다. 이 플랫폼을 통해 여러분은 각자의 공부 수준에 맞는 학습법을 찾고, 나이와 지역에 따른 맞춤형 복지정책을 확인할 수 있습니다</p>
+            <p>모두가 평등하게 정보와 기술에 접근할 수 있는 세상을 만드는 그날까지 노력하겠습니다.</p>
+            <button class="close-btn" onclick="closeIntro()">닫기</button>
+        </div>
+    </div>
+
+    <!-- 메인 콘텐츠 -->
+    <div class="container" id="mainContent">
+        <h1>스터디 & 복지정책 추천</h1>
+        <div class="tab">
+            <button class="tablinks active" onclick="openTab(event, 'study')">공부법</button>
+            <button class="tablinks" onclick="openTab(event, 'welfare')">복지정책</button>
+        </div>
+        <div id="study" class="tabcontent active">
+            <div class="form-group">
+                <label for="studyLevel">공부 수준:</label>
+                <input type="text" id="studyLevel" placeholder="예: 초등학교 1학년 1학기 수학">
+                <button onclick="recommendStudy()">추천 공부법</button>
+                <div id="studyResult" class="result"></div>
+            </div>
+        </div>
+        <div id="welfare" class="tabcontent">
+            <div class="form-group">
+                <label for="age">나이:</label>
+                <input type="number" id="age" placeholder="예: 30">
+            </div>
+            <div class="form-group">
+                <label for="location">지역:</label>
+                <input type="text" id="location" placeholder="예: 서울, 부산">
+            </div>
+            <button onclick="recommendWelfare()">추천 복지정책</button>
+            <div id="welfareResult" class="result"></div>
+        </div>
+    </div>
+
+    <!-- 설명 및 개인정보 보호정책 팝업 -->
+    <div class="info" onclick="togglePopup()">사이트 설명 및 개인정보 보호정책</div>
+    <div class="popup" id="popup">
+        <img src="log.jpg" alt="프리시안 브릿지 로고" style="width: 30%; height: auto;">
+        <h2>사이트 설명 및 개인정보 보호정책</h2>
+        <p>프리시안 브릿지는 누구나 쉽게 접근할 수 있는 학습 자료와 복지정책 정보를 제공합니다.</p>
+        <p>지식과 기술의 다리를 건너 더 나은 미래를 향해 나아가세요. 함께하면 더 큰 힘이 됩니다. 프리시안 브릿지와 함께하세요!
+        </p>
+        <h2>개인정보 보호정책</h2>
+        <p>사용자의 개인정보는 안전하게 보호되며, 데이터는 보안 기준에 따라 안전하게 처리됩니다.</p>
+
+        <p>Designed by DY in south korea</p>
+        <button class="close-btn" onclick="togglePopup()">닫기</button>
+    </div>
+
+    <script>
+        // 소개 팝업 닫기 함수
+        function closeIntro() {
+            document.getElementById('introPopup').style.display = 'none';
+            document.getElementById('mainContent').style.display = 'block';
+        }
+
+        // 탭 전환 함수
+        function openTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+                tabcontent[i].classList.remove("active");
+            }
+            tablinks = document.getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].classList.remove("active");
+            }
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.classList.add("active");
+        }
+
+        // 추천 공부법 함수
+        function recommendStudy() {
+            const level = document.getElementById("studyLevel").value;
+            let recommendation;
+            switch(level) {
+                case '초등학교 1학년 1학기 수학':
+                    recommendation = '놀이를 통한 학습: 숫자 세기, 패턴 인식, 간단한 덧셈과 뺄셈 등을 게임과 놀이를 통해 자연스럽게 익힐 수 있게 도와주세요.<br><br>일상 속에서의 수학: 일상 생활에서 수학적 개념을 접할 수 있도록 유도하세요.<br><br>시각적 학습 도구 활용: 그림, 도형, 숫자 카드, 블록 등 시각적인 학습 도구를 활용하여 아이들이 직접 보고 만지며 이해할 수 있게 도와줍니다.<br><br>반복 학습: 기초 수학 개념은 반복 학습을 통해 확립됩니다. 꾸준히 복습하고 연습 문제를 풀며 학습 내용을 강화하세요.<br><br>긍정적 피드백: 아이들이 수학 문제를 풀 때마다 긍정적인 피드백을 주어 자신감을 키워주세요. 작은 성취도 칭찬해주는 것이 중요합니다.<br><br>수준별 맞춤 무료 추천강좌입니다: <a href="https://primary.ebs.co.kr/book/main/view?textbookId=TB1000011099" target="_blank">EBS 만점왕 수학 1-1</a>';
+                    break;
+                case '고등학교 2학년 2학기 국어':
+                    recommendation = ' 고등학교 2학년은 내신 뿐만아니라 수능 또한 복합적으로 대비해야합니다</h1> <h2>1. 교과서와 수능 기출 문제 병행</h2> <ul> <li>교과서 내용을 충실히 학습하여 내신 대비를 철저히 합니다. 교과서에 나오는 문학 작품, 비문학 지문, 문법 등을 꼼꼼히 정리합니다.</li> <li>수능 기출 문제를 풀어보며 출제 경향을 파악하고, 기출 문제에서 자주 나오는 주제나 유형을 익힙니다.</li> </ul> <h2>2. 문학 작품 분석</h2> <ul> <li>교과서와 수능에서 다루는 주요 문학 작품을 분석합니다. 등장인물, 배경, 주제, 줄거리 등을 정리하여 작품의 핵심을 파악합니다.</li> <li>수능 기출 문제와 교과서 연계 작품을 함께 분석하여 내신과 수능 모두 대비합니다.</li> </ul> <h2>3. 어휘력 강화</h2> <ul> <li>국어 실력 향상을 위해 다양한 어휘를 학습합니다. 자주 나오는 어휘와 표현들을 정리하고 반복적으로 학습합니다.</li> <li>문맥 속에서 어휘의 의미를 파악하는 연습을 통해 독해력을 높입니다.</li> </ul> <h2>4. 문법과 비문학 지문 연습</h2> <ul> <li>교과서에 나오는 문법 사항을 정리하고, 수능 기출 문제의 문법 문제를 풀어봅니다. 주요 문법 개념을 확실히 이해합니다.</li> <li>비문학 지문을 읽고 요약하는 연습을 통해 독해 능력을 키웁니다. 기출 문제에서 다양한 비문학 지문을 접하며 출제 경향을 파악합니다.</li> </ul> <h2>5. 꾸준한 복습과 노트 정리</h2> <ul> <li>공부한 내용을 주기적으로 복습하여 기억에 오래 남도록 합니다. 중요한 개념과 내용을 노트에 정리해 두고 복습할 때 활용합니다.</li> <li>필기 노트를 체계적으로 정리하여 필요할 때 쉽게 찾아볼 수 있도록 합니다.</li> </ul> <h2>6. 모의고사와 실전 연습</h2> <ul> <li>모의고사를 통해 실제 시험과 같은 환경에서 연습합니다. 시간 관리와 문제 풀이 전략을 익히며 실전 감각을 키웁니다.</li> <li>모의고사 후에는 틀린 문제를 분석하고, 약점을 보완하는 학습을 합니다.</li> </ul> <h2>7. 전략적인 공부 계획</h2> <ul> <li>내신과 수능 대비를 위한 공부 계획을 세우고, 주기적으로 목표를 설정합니다.</li> <li>교과 진도와 수능 준비를 균형 있게 배분하여 학습을 진행합니다.</li><br><br> <a href="https://www.ebsi.co.kr/ebs/lms/lmsx/retrieveSbjtDtl.ebs?courseId=S20220000714#intro">[수능완성Zip] 수능 독서, 연계분석이 먼저다!</a><br> <a href="https://www.ebsi.co.kr/ebs/lms/lmsx/retrieveSbjtDtl.ebs?courseId=S20230000447#intro" target="_blank>[핵심개념쏙쏙] 장재혁의 문법</a>';
+                    break;
+                case '초등학교 1학년 1학기 영어':
+                    recommendation = '알파벳과 간단한 단어를 익히는 시기입니다. 소리 내어 읽기 연습과 노래로 영어를 흥미롭게 접하게 해주세요.';
+                    break;
+                case '대학과정 고급생화학':
+                    recommendation = '<h1>고급 생화학 추천공부법</h1> <h2>1. 기본 개념 복습</h2> <p>고급 생화학은 기초 개념을 확실히 이해하는 것이 필수입니다. 기본적인 생화학, 세포 생물학, 분자 생물학 지식을 복습하세요.</p> <h2>2. 교과서와 참고서 활용</h2> <p>주요 교과서와 참고서를 꼼꼼히 읽고, 중요한 개념과 원리를 이해하세요. 교과서에 포함된 실험 예제와 문제를 풀어보는 것도 도움이 됩니다.</p> <h2>3. 노트 정리</h2> <p>강의 내용을 체계적으로 노트에 정리하고, 주요 개념, 반응 경로, 효소 작용 메커니즘 등을 시각적으로 정리하세요. 그림, 다이어그램, 표 등을 활용하면 이해가 더 쉬워집니다.</p> <h2>4. 문제 풀이 연습</h2> <p>다양한 문제를 풀어보며 자신의 이해도를 점검합니다. 기출 문제, 연습 문제, 모의고사 문제를 통해 문제 해결 능력을 키우세요.</p> <h2>5. 실험 참여</h2> <p>가능한 한 실험에 참여하여 실험 기법과 데이터를 다루는 능력을 향상시키세요. 직접 실험을 해보는 것은 이론을 이해하는 데 큰 도움이 됩니다.</p> <h2>6. 스터디 그룹 활용</h2> <p>동료들과 스터디 그룹을 만들어 함께 공부하세요. 서로의 이해를 돕고, 다양한 시각에서 문제를 해결해 나가는 경험을 쌓을 수 있습니다.</p> <h2>7. 논문 읽기</h2> <p>최신 연구 논문을 읽고, 최신 동향과 발견을 파악하세요. 이는 깊이 있는 이해와 더불어 연구 주제를 선택할 때도 도움이 됩니다.</p> <h2>8. 교수와의 소통</h2> <p>질문이 생기면 교수나 강사와 적극적으로 소통하세요. 추가 설명이나 참고 자료를 요청하는 것도 좋은 방법입니다.</p><br><br>수준별 맞춤 무료 추천강좌입니다: <a href="http://ocw.sogang.ac.kr/courses/home?&cate_02=34&cate_03=1618&cate_type=depart&classYear=&semester=&profSeq=" target="_blank">서강대학교 OCW 고급생화학 강좌</a> ';
+                    break;
+                default:
+                    recommendation = '올바른 공부 수준을 입력해 주세요. 각 수준에 맞는 공부법을 단계적으로 추천드릴게요.';
+            }
+            document.getElementById('studyResult').innerHTML = recommendation;
+        }
+
+        // 추천 복지정책 함수
+        function recommendWelfare() {
+    const age = document.getElementById('age').value;
+    const location = document.getElementById('location').value.toLowerCase();
+    let welfare = '';
+    if (age && location) {
+        if (location.includes('서울')) {
+            if (age <= 18) {
+                        welfare = '<h1>서울시 청소년 복지정책</h1> <h2>청소년 보호</h2> <p><b>청소년 보호센터</b>: 가정 폭력, 학대, 비행 등 다양한 문제를 겪는 청소년들을 위한 보호 시설입니다. 이곳에서는 상담, 임시 보호, 법적 지원 등을 제공합니다.</p><br>신청바로가기: <a href=\"https://www.sen.go.kr/sen/index.do\" target=\"_blank\">서울특별시교육청</a><br> <p><b>청소년 상담소</b>: 심리적, 정서적 문제를 겪는 청소년들을 대상으로 전문 상담 서비스를 제공합니다. 개인 상담, 집단 상담, 전화 상담 등 다양한 형태의 상담이 이루어집니다.</p><br>신청바로가기: <a href=\"https://www.sen.go.kr/sen/index.do\" target=\"_blank\">서울특별시교육청</a><br> <h2>청소년 교육</h2> <p><b>학교 내 문제 해결 프로그램</b>: 학교 내에서 발생하는 다양한 문제들을 해결하기 위해 상담, 멘토링, 교육 프로그램 등을 제공합니다.</p><br>신청바로가기: <a href=\"https://www.sen.go.kr/sen/index.do\" target=\"_blank\">서울특별시교육청</a><br> <p><b>학업 지원 프로그램</b>: 저소득층, 학업 부진 학생들을 위한 학습 지원 프로그램입니다. 학비 지원, 교재 지원, 학습 멘토링 등을 포함합니다.</p><br>신청바로가기: <a href=\"https://www.sen.go.kr/sen/index.do\" target=\"_blank\">서울특별시교육청</a><br> <h2>청소년 건강</h2> <p><b>의료 지원</b>: 저소득층 청소년들을 위한 의료비 지원 프로그램입니다. 기본적인 의료 서비스부터 전문 치료까지 다양한 의료 지원을 제공합니다.</p><br>신청바로가기: <a href=\"https://www.sen.go.kr/sen/index.do\" target=\"_blank\">서울특별시교육청</a><br> <p><b>정신건강 상담</b>: 청소년들의 정신 건강을 지원하기 위한 상담 서비스를 제공합니다. 우울증, 불안, 스트레스 등 다양한 정신 건강 문제를 다룹니다.</p> <br>신청바로가기: <a href=\"https://www.sen.go.kr/sen/index.do\" target=\"_blank\">서울특별시교육청</a><br><h2>청소년 문화 예술 프로그램</h2> <p><b>예술 체험 프로그램</b>: 미술, 음악, 연극 등 다양한 예술 활동을 통해 창의력을 키울 수 있는 프로그램입니다.</p><br>신청바로가기: <a href=\"https://www.sen.go.kr/sen/index.do\" target=\"_blank\">서울특별시교육청</a><br> <p><b>문화 축제와 행사</b>: 청소년들이 직접 참여하고 기획하는 다양한 문화 행사와 축제를 통해 문화 경험을 확대할 수 있습니다.</p> <br>신청바로가기: <a href=\"https://www.sen.go.kr/sen/index.do\" target=\"_blank\">서울특별시교육청</a><br><h2>청소년 체육 프로그램</h2> <p><b>스포츠 클럽</b>: 다양한 스포츠 클럽을 운영하여 청소년들이 체육 활동을 즐길 수 있도록 합니다.</p><br>신청바로가기: <a href=\"https://www.sen.go.kr/sen/index.do\" target=\"_blank\">서울특별시교육청</a><br> <p><b>체육 대회</b>: 청소년들을 대상으로 하는 각종 체육 대회를 개최하여 경쟁과 협동의 즐거움을 제공합니다.</p> <br>신청바로가기: <a href=\"https://www.sen.go.kr/sen/index.do\" target=\"_blank\">서울특별시교육청</a><br><h2>청소년 창의성 프로그램</h2> <p><b>창의성 교육 프로그램</b>: 다양한 창의성 교육 프로그램을 통해 문제 해결 능력과 창의적 사고를 배양합니다.</p><br>신청바로가기: <a href=\"https://www.sen.go.kr/sen/index.do\" target=\"_blank\">서울특별시교육청</a><br> <p><b>창의 프로젝트</b>: 청소년들이 직접 기획하고 실행할 수 있는 창의 프로젝트를 지원합니다.</p> <br>신청바로가기: <a href=\"https://www.sen.go.kr/sen/index.do\" target=\"_blank\">서울특별시교육청</a><br><h2>청소년 자원봉사 프로그램</h2> <p><b>자원봉사 교육</b>: 자원봉사의 의미와 방법을 교육하고, 다양한 자원봉사 기회를 제공합니다.</p> <p><b>사회 공헌 활동</b>: 다양한 사회 공헌 프로젝트에 참여할 수 있는 기회를 제공합니다.</p><br>신청바로가기: <a href=\"https://www.sen.go.kr/sen/index.do\" target=\"_blank\">1365</a><br>';
+                    } else if (age >= 65) {
+                        welfare = '서울시 노인 복지 서비스를 이용할 수 있습니다.';
+                    } else {
+                        welfare = '서울시에서 제공하는 다양한 복지 서비스를 이용할 수 있습니다.';
+                    }
+                } else if (location.includes('부산')) {
+                    if (age <= 18) {
+                        welfare = '부산시 청소년 지원 프로그램을 이용할 수 있습니다.';
+                    } else if (age >= 65) {
+                        welfare = '부산시 노인 복지 서비스를 이용할 수 있습니다.';
+                    } else {
+                        welfare = '부산시에서 제공하는 다양한 복지 서비스를 이용할 수 있습니다.';
+                    }
+                } else {
+                    welfare = `${location}에서 ${age}세가 받을 수 있는 복지정책을 추천합니다.`;
+                }
+            } else {
+                welfare = '나이와 지역을 정확히 입력해 주세요.';
+            }
+            document.getElementById('welfareResult').innerHTML = welfare;
+        }
+
+        // 팝업 토글 함수
+        function togglePopup() {
+            const popup = document.getElementById('popup');
+            popup.style.display = (popup.style.display === 'none' || popup.style.display === '') ? 'block' : 'none';
+        }
+    </script>
+</body>
+</html>
